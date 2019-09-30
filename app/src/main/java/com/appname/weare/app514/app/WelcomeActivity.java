@@ -23,7 +23,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 finish();
                 //关闭当前页面
             }
-        }, 2500);
+        }, 1000);
 
     }
 }

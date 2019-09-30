@@ -22,9 +22,20 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
+    //Butterknife：绑定、监听控件
     implementation 'com.jakewharton:butterknife:7.0.1'
+    //Recyclerview：实现下拉列表
+    implementation 'com.android.support:recyclerview-v7:24.2.1'
+    //okhttputils：网络请求并解析数据
+    implementation 'com.zhy:okhttputils:2.6.2'
+    //alibaba的json解析包
+    implementation files('libs/fastjson-1.2.4.jar')
+    //整合module，首页的广告栏横幅banner
+    implementation project(path: ':banner')
+    //用glide进行网络请求
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation files('libs/picasso-2.5.2.jar')
 }

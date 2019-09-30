@@ -14,7 +14,7 @@ public class TypeFragment extends BaseFragment {
 
     @Override
     public View initView() {
-        Log.e(TAG, "主页视图被初始化了");
+        Log.e(TAG, "分类视图被初始化了");
         textView = new TextView(mContext);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(25);
@@ -25,7 +25,7 @@ public class TypeFragment extends BaseFragment {
     @Override
     public void initData() {
         super.initData();
-        Log.e(TAG, "主页数据被初始化了");
+        Log.e(TAG, "分类数据被初始化了");
         textView.setText("分类");
     }
 }
