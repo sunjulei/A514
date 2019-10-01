@@ -93,6 +93,8 @@ public class MainActivity extends FragmentActivity {
                             case R.id.rb_user:
                                 position = 4;
                                 break;
+                            default:
+                                break;
                         }
                         BaseFragment baseFragment = getFragment(position);
                         switchFragment(mContext, baseFragment);

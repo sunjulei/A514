@@ -1,9 +1,14 @@
 package com.appname.weare.app514.home.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appname.weare.app514.R;
@@ -25,7 +31,9 @@ import com.youth.banner.listener.OnLoadImageListener;
 import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
 import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -85,9 +93,6 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     /**
      * 根据位置得到类型-系统调用
-     *
-     * @param position
-     * @return
      */
     @Override
     public int getItemViewType(int position) {
@@ -119,18 +124,16 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     /**
      * 返回总条数，共六种类型
-     *
-     * @return
      */
     @Override
     public int getItemCount() {
         //以后做完后改成6，现在只实现横幅广告，暂时写1
-        return 3;
+        return 4;
     }
 
     /**
      * 横幅广播的适配器
-     * 初始化BannerViewHolder
+     * 初始化ViewHolder
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -140,6 +143,8 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new ChannelViewHolder(mLayoutInflater.inflate(R.layout.channel_item, null), mContext);
         } else if (viewType == ACT) {
             return new ActViewHolder(mLayoutInflater.inflate(R.layout.act_item, null), mContext);
+        }else if (viewType==SECKILL){
+            return new SeckillViewHolder(mLayoutInflater.inflate(R.layout.seckill_item, null), mContext);
         }
         return null;
     }
@@ -161,6 +166,9 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ActViewHolder actViewHolder = (ActViewHolder) holder;
             //设置Act的数据
             actViewHolder.setData(resultBean.getAct_info());
+        }else if (getItemViewType(position)==SECKILL){
+            SeckillViewHolder seckillViewHolder= (SeckillViewHolder) holder;
+            seckillViewHolder.setData(resultBean.getSeckill_info());
         }
     }
 
@@ -308,13 +316,13 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
                 @Override
-                public boolean isViewFromObject(View view,Object o) {
+                public boolean isViewFromObject(View view, Object o) {
                     return view == o;
                 }
 
 
                 @Override
-                public Object instantiateItem( ViewGroup container, int position) {
+                public Object instantiateItem(ViewGroup container, int position) {
                     ImageView view = new ImageView(mContext);
                     view.setScaleType(ImageView.ScaleType.FIT_XY);
                     Glide.with(mContext).load(Constants.Base_URl_IMAGE + data.get(position).getIcon_url()).into(view);
@@ -323,7 +331,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
                 @Override
-                public void destroyItem(ViewGroup container, int position,  Object object) {
+                public void destroyItem(ViewGroup container, int position, Object object) {
                     container.removeView((View) object);
                 }
             });
@@ -347,4 +355,71 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }
     }
+
+    /**
+     * 设置秒杀适配器
+     */
+    class SeckillViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+        private TextView tvMore;
+        private RecyclerView recyclerView;
+
+        public SeckillViewHolder(View itemView, Context mContext) {
+            super(itemView);
+            tvTime = (TextView) itemView.findViewById(R.id.tv_time_seckill);
+            tvMore = (TextView) itemView.findViewById(R.id.tv_more_seckill);
+            recyclerView = (RecyclerView) itemView.findViewById(R.id.rv_seckill);
+            this.mContext = mContext;
+
+        }
+
+
+
+        public void setData(final ResultBean.SeckillInfoBean data) {
+            //设置时间
+            if (isFirst) {
+                dt = Integer.parseInt(data.getEnd_time()) - Integer.parseInt(data.getStart_time());
+                isFirst = false;
+            }
+            //倒计时开始
+            handler.sendEmptyMessageDelayed(0, 1000);
+
+            //设置RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+            SeckillRecyclerViewAdapter adapter = new SeckillRecyclerViewAdapter(mContext, data);
+            recyclerView.setAdapter(adapter);
+
+            //点击事件
+            adapter.setOnSeckillRecyclerView(new SeckillRecyclerViewAdapter.OnSeckillRecyclerView() {
+                @Override
+                public void onItemClick(int position) {
+                    Toast.makeText(mContext, "position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private boolean isFirst = true;
+    private TextView tvTime;
+    private long dt;
+    //用handler刷新秒杀的倒计时
+    @SuppressLint({"HandlerLeak","SimpleDateFormat"})
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what==0){
+                dt=dt-1000;
+                 SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
+                tvTime.setText(sd.format(new Date(dt)));
+                System.out.println();
+                handler.removeMessages(0,1000);
+                handler.sendEmptyMessageDelayed(0,1000);
+                if (dt<=0){
+                    handler.removeMessages(0);
+                }
+            }
+        }
+    };
 }
+
