@@ -3,7 +3,7 @@ package com.appname.weare.app514.utils;
 public class Constants {
 
     public static final String BASE = "http://192.168.1.100:8080";
-    //    public static final String BASE = "http://10.0.2.2:8080";
+//        public static final String BASE = "http://10.0.2.2:8080";
     // 请求Json数据基本URL
     public static final String Base_URL_JSON = BASE + "/atguigu/json/";
     // 请求图片基本URL

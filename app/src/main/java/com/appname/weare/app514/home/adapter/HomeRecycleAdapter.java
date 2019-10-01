@@ -1,10 +1,14 @@
 package com.appname.weare.app514.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -103,6 +107,8 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case HOT:
                 currentType = HOT;
                 break;
+            default:
+                break;
         }
         return currentType;
     }
@@ -116,7 +122,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //以后做完后改成6，现在只实现横幅广告，暂时写1
-        return 1;
+        return 2;
     }
 
     /**
@@ -127,6 +133,8 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == BANNER) {
             return new BannerViewHolder(mLayoutInflater.inflate(R.layout.banner_viewpager, null), mContext, resultBean);
+        } else if (viewType == CHANNEL) {
+            return new ChannelViewHolder(mLayoutInflater.inflate(R.layout.channel_item, null), mContext);
         }
         return null;
     }
@@ -140,6 +148,10 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
             //设置数据Banner的数据
             bannerViewHolder.setData(resultBean.getBanner_info());
+        } else if (getItemViewType(position) == CHANNEL) {
+            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
+            //设置数据Channel的数据
+            channelViewHolder.setData(resultBean.getChannel_info());
         }
     }
 
@@ -171,7 +183,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
         /**
-         *d定义轮播图的属性及监听
+         * d定义轮播图的属性及监听
          */
         private void setBannerData(final List<ResultBean.BannerInfoBean> banner_info) {
             //设置循环指标点
@@ -223,6 +235,36 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //                        mContext.startActivity(intent);
                         Toast.makeText(mContext, name, Toast.LENGTH_SHORT).show();
                     }
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置频道适配器
+     */
+    class ChannelViewHolder extends RecyclerView.ViewHolder {
+        public GridView gvChannel;
+        public Context mContext;
+
+        public ChannelViewHolder(View view, Context mContext) {
+            super(view);
+            gvChannel = (GridView) view.findViewById(R.id.gv_channel);
+            this.mContext = mContext;
+        }
+
+        public void setData(final List<ResultBean.ChannelInfoBean> channel_info) {
+            gvChannel.setAdapter(new ChannelAdapter(mContext, channel_info));
+            //点击事件
+            gvChannel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position <= 8) {
+//                        Intent intent = new Intent(mContext, GoodsListActivity.class);
+//                        intent.putExtra("position", position);
+//                        mContext.startActivity(intent);
+                    }
+                    Toast.makeText(mContext, "position==" + position, Toast.LENGTH_SHORT).show();
                 }
             });
         }

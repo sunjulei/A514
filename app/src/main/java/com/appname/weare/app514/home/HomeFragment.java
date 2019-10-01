@@ -24,6 +24,10 @@ import okhttp3.Request;
 public class HomeFragment extends BaseFragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
+    //下滑一定位置时出现回到顶部按钮
+    private static final int TOP_COUNT = 3;
+
+
     private RecyclerView rvHome;
     private ImageView ib_top;
     private TextView tv_search_home;
@@ -107,10 +111,11 @@ public class HomeFragment extends BaseFragment {
 
         @Override
         public void onError(okhttp3.Call call, Exception e, int id) {
+            Log.e(TAG, "onError.okhttp3:联网失败" + e.getMessage());
         }
 
         public void onError(Call call, Exception e, int id) {
-            Log.e("TAG", "联网失败" + e.getMessage());
+            Log.e(TAG, "联网失败" + e.getMessage());
         }
 
 
@@ -127,7 +132,7 @@ public class HomeFragment extends BaseFragment {
                         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                             @Override
                             public int getSpanSize(int position) {
-                                if (position <= 3) {
+                                if (position <= TOP_COUNT) {
                                     ib_top.setVisibility(View.GONE);
                                 } else {
                                     ib_top.setVisibility(View.VISIBLE);
@@ -141,19 +146,21 @@ public class HomeFragment extends BaseFragment {
                 case 101:
                     Toast.makeText(mContext, "https", Toast.LENGTH_SHORT).show();
                     break;
+                default:break;
             }
         }
     }
 
     /**
      * 解析json数据并存储到ResultBeanData
+     *
      * @param json
      */
     private void processData(String json) {
         if (!TextUtils.isEmpty(json)) {
             ResultBeanData resultBeanData = JSON.parseObject(json, ResultBeanData.class);
             resultBean = resultBeanData.getResult();
-//            Log.e(TAG, "resultBean==" + resultBean.getBanner_info());
+            Log.e(TAG, "resultBean==" + resultBean.getBanner_info());
         }
     }
 }

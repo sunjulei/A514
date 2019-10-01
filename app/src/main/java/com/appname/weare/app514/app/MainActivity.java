@@ -67,6 +67,9 @@ public class MainActivity extends FragmentActivity {
         fragments.add(new UserFragment());
     }
 
+    /**
+     * RadioGroup点击监听
+     */
     private void initListener() {
         rgMain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -102,9 +105,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     /**
-     * 判断ArrayList是否有数据，有则通过position获取的Fragment；没有则返回null
-     * @param position 用户所点击RadioGroup的子组件的索引
-     * @return 返回对应索引的Fragment或null
+     * 判断fragments是否有数据，有则通过position获取的Fragment；没有则返回null
      */
     private BaseFragment getFragment(int position) {
         if (fragments != null && fragments.size() > 0) {
@@ -116,11 +117,7 @@ public class MainActivity extends FragmentActivity {
 
 
     /**
-     *先判断是否点击了同一个Fragment，
-     * 是：结束；不是，继续判断Fragment是否添加：
-     * 否，隐藏当前Fragment并添加新的；是，隐藏之前的，显示新的
-     * @param fromFragment 当前显示的Fragment
-     * @param nextFragment 即将显示的Fragment
+     * 显示和隐藏RadioButton对应的页面
      */
     private void switchFragment(Fragment fromFragment, BaseFragment nextFragment) {
         if (mContext != nextFragment) {
