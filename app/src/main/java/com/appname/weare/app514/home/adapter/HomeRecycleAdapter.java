@@ -1,9 +1,10 @@
 package com.appname.weare.app514.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerClickListener;
 import com.youth.banner.listener.OnLoadImageListener;
+import com.zhy.magicviewpager.transformer.AlphaPageTransformer;
+import com.zhy.magicviewpager.transformer.ScaleInTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +125,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //以后做完后改成6，现在只实现横幅广告，暂时写1
-        return 2;
+        return 3;
     }
 
     /**
@@ -135,6 +138,8 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new BannerViewHolder(mLayoutInflater.inflate(R.layout.banner_viewpager, null), mContext, resultBean);
         } else if (viewType == CHANNEL) {
             return new ChannelViewHolder(mLayoutInflater.inflate(R.layout.channel_item, null), mContext);
+        } else if (viewType == ACT) {
+            return new ActViewHolder(mLayoutInflater.inflate(R.layout.act_item, null), mContext);
         }
         return null;
     }
@@ -146,12 +151,16 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == BANNER) {
             BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
-            //设置数据Banner的数据
+            //设置Banner的数据
             bannerViewHolder.setData(resultBean.getBanner_info());
         } else if (getItemViewType(position) == CHANNEL) {
             ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
-            //设置数据Channel的数据
+            //设置Channel的数据
             channelViewHolder.setData(resultBean.getChannel_info());
+        } else if (getItemViewType(position) == ACT) {
+            ActViewHolder actViewHolder = (ActViewHolder) holder;
+            //设置Act的数据
+            actViewHolder.setData(resultBean.getAct_info());
         }
     }
 
@@ -267,6 +276,75 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     Toast.makeText(mContext, "position==" + position, Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    /**
+     * 设置活动适配器
+     */
+    class ActViewHolder extends RecyclerView.ViewHolder {
+        public ViewPager actViewPager;
+        public Context mContext;
+
+        public ActViewHolder(View itemView, Context mContext) {
+            super(itemView);
+            this.actViewPager = itemView.findViewById(R.id.act_viewpager);
+            this.mContext = mContext;
+        }
+
+        public void setData(final List<ResultBean.ActInfoBean> data) {
+            //设置每个页面的间距
+            actViewPager.setPageMargin(20);
+            //设置缓存的页面数量
+            actViewPager.setOffscreenPageLimit(3);
+            //设置动画
+            actViewPager.setPageTransformer(true, new AlphaPageTransformer(new ScaleInTransformer()));
+
+            //设置适配器
+            actViewPager.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+                    return data.size();
+                }
+
+                @Override
+                public boolean isViewFromObject(View view,Object o) {
+                    return view == o;
+                }
+
+
+                @Override
+                public Object instantiateItem( ViewGroup container, int position) {
+                    ImageView view = new ImageView(mContext);
+                    view.setScaleType(ImageView.ScaleType.FIT_XY);
+                    Glide.with(mContext).load(Constants.Base_URl_IMAGE + data.get(position).getIcon_url()).into(view);
+                    container.addView(view);
+                    return view;
+                }
+
+                @Override
+                public void destroyItem(ViewGroup container, int position,  Object object) {
+                    container.removeView((View) object);
+                }
+            });
+
+            actViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int i, float v, int i1) {
+
+                }
+
+                @Override
+                public void onPageSelected(int i) {
+                    Toast.makeText(mContext, "首页act的position:" + i, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int i) {
+
+                }
+            });
+
         }
     }
 }

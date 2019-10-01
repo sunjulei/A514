@@ -33,9 +33,16 @@ dependencies {
     implementation 'com.zhy:okhttputils:2.6.2'
     //alibaba的json解析包
     implementation files('libs/fastjson-1.2.4.jar')
-    //整合module，首页的广告栏横幅banner
+    //整合module，首页的第一部分（广告栏横幅banner）
     implementation project(path: ':banner')
     //用glide进行网络请求
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    //首页的第三部分（活动视图act）的美化
+    implementation('com.zhy:magic-viewpager:1.0.1') {
+        //不添加viewpager的v4包
+        exclude module: 'support-v4'
+    }
     implementation files('libs/picasso-2.5.2.jar')
+
+
 }
