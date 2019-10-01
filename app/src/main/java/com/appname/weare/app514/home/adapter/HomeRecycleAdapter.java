@@ -128,7 +128,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //以后做完后改成6，现在只实现横幅广告，暂时写1
-        return 4;
+        return 5;
     }
 
     /**
@@ -143,8 +143,10 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new ChannelViewHolder(mLayoutInflater.inflate(R.layout.channel_item, null), mContext);
         } else if (viewType == ACT) {
             return new ActViewHolder(mLayoutInflater.inflate(R.layout.act_item, null), mContext);
-        }else if (viewType==SECKILL){
+        } else if (viewType == SECKILL) {
             return new SeckillViewHolder(mLayoutInflater.inflate(R.layout.seckill_item, null), mContext);
+        } else if (viewType == RECOMMEND) {
+            return new RecommendViewHolder(mLayoutInflater.inflate(R.layout.recommend_item, null), mContext);
         }
         return null;
     }
@@ -166,9 +168,12 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ActViewHolder actViewHolder = (ActViewHolder) holder;
             //设置Act的数据
             actViewHolder.setData(resultBean.getAct_info());
-        }else if (getItemViewType(position)==SECKILL){
-            SeckillViewHolder seckillViewHolder= (SeckillViewHolder) holder;
+        } else if (getItemViewType(position) == SECKILL) {
+            SeckillViewHolder seckillViewHolder = (SeckillViewHolder) holder;
             seckillViewHolder.setData(resultBean.getSeckill_info());
+        } else if (getItemViewType(position) == RECOMMEND) {
+            RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
+            recommendViewHolder.setData(resultBean.getRecommend_info());
         }
     }
 
@@ -375,7 +380,6 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
 
-
         public void setData(final ResultBean.SeckillInfoBean data) {
             //设置时间
             if (isFirst) {
@@ -404,22 +408,53 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private TextView tvTime;
     private long dt;
     //用handler刷新秒杀的倒计时
-    @SuppressLint({"HandlerLeak","SimpleDateFormat"})
-    private Handler handler = new Handler(){
+    @SuppressLint({"HandlerLeak", "SimpleDateFormat"})
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what==0){
-                dt=dt-1000;
-                 SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
+            if (msg.what == 0) {
+                dt = dt - 1000;
+                SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
                 tvTime.setText(sd.format(new Date(dt)));
                 System.out.println();
-                handler.removeMessages(0,1000);
-                handler.sendEmptyMessageDelayed(0,1000);
-                if (dt<=0){
+                handler.removeMessages(0, 1000);
+                handler.sendEmptyMessageDelayed(0, 1000);
+                if (dt <= 0) {
                     handler.removeMessages(0);
                 }
             }
         }
     };
+
+
+    /**
+     * 设置推荐适配器
+     */
+    private class RecommendViewHolder extends RecyclerView.ViewHolder {
+        private Context mContext;
+        private GridView gv_recommend;
+        private TextView tv_more_recommend;
+
+
+        public RecommendViewHolder(View itemView, Context mContext) {
+            super(itemView);
+            this.mContext = mContext;
+            gv_recommend = (GridView) itemView.findViewById(R.id.gv_recommend);
+            tv_more_recommend = (TextView) itemView.findViewById(R.id.tv_more_recommend);
+        }
+
+
+        public void setData(List<ResultBean.RecommendInfoBean> data) {
+            RecommendGridViewAdapter adapter = new RecommendGridViewAdapter(mContext, data);
+            gv_recommend.setAdapter(adapter);
+
+            gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext, "position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 }
 
