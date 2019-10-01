@@ -128,7 +128,7 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         //以后做完后改成6，现在只实现横幅广告，暂时写1
-        return 5;
+        return 6;
     }
 
     /**
@@ -147,6 +147,8 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new SeckillViewHolder(mLayoutInflater.inflate(R.layout.seckill_item, null), mContext);
         } else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mLayoutInflater.inflate(R.layout.recommend_item, null), mContext);
+        } else if (viewType == HOT) {
+            return new HotViewHolder(mLayoutInflater.inflate(R.layout.hot_item, null), mContext);
         }
         return null;
     }
@@ -174,6 +176,9 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         } else if (getItemViewType(position) == RECOMMEND) {
             RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
             recommendViewHolder.setData(resultBean.getRecommend_info());
+        } else if (getItemViewType(position) == HOT) {
+            HotViewHolder hotViewHolder = (HotViewHolder) holder;
+            hotViewHolder.setData(resultBean.getHot_info());
         }
     }
 
@@ -449,6 +454,32 @@ public class HomeRecycleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             gv_recommend.setAdapter(adapter);
 
             gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext, "position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private class HotViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+        private TextView tv_more_hot;
+        private GridView gv_hot;
+
+        public HotViewHolder(View itemView, Context mContext) {
+            super(itemView);
+            this.mContext = mContext;
+            tv_more_hot = itemView.findViewById(R.id.tv_more_hot);
+            gv_hot = itemView.findViewById(R.id.gv_hot);
+        }
+
+        public void setData(List<ResultBean.HotInfoBean> data) {
+            HotViewHolderAdapter adapter=new HotViewHolderAdapter(mContext,data);
+            gv_hot.setAdapter(adapter);
+
+            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Toast.makeText(mContext, "position:" + position, Toast.LENGTH_SHORT).show();
