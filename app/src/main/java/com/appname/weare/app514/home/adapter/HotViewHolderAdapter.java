@@ -1,11 +1,9 @@
 package com.appname.weare.app514.home.adapter;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,7 +54,7 @@ class HotViewHolderAdapter extends BaseAdapter {
         }
 
         ResultBeanData.ResultBean.HotInfoBean hotInfoBean = data.get(position);
-        Glide.with(mContext).load(Constants.Base_URl_IMAGE + hotInfoBean.getFigure()).into(holder.ivHot);
+        Glide.with(mContext).load(Constants.BASE_URl_IMAGE + hotInfoBean.getFigure()).into(holder.ivHot);
         holder.tvName.setText(hotInfoBean.getName());
         holder.tvPrice.setText("￥" + hotInfoBean.getCover_price());
         return convertView;

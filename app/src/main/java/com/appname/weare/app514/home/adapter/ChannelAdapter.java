@@ -5,11 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.appname.weare.app514.R;
-import com.appname.weare.app514.home.bean.ResultBeanData;
 import com.appname.weare.app514.home.bean.ResultBeanData.ResultBean;
 import com.appname.weare.app514.utils.Constants;
 import com.bumptech.glide.Glide;
@@ -57,7 +55,7 @@ public class ChannelAdapter extends BaseAdapter {
         ResultBean.ChannelInfoBean channelInfoBean = channel_info.get(position);
         holer.tvChannel.setText(channelInfoBean.getChannel_name());
         //glide网络请求将图片设置到ImageButton
-        Glide.with(mContext).load(Constants.Base_URl_IMAGE + channelInfoBean.getImage()).into(holer.ivChannel);
+        Glide.with(mContext).load(Constants.BASE_URl_IMAGE + channelInfoBean.getImage()).into(holer.ivChannel);
         return convertView;
     }
 

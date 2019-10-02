@@ -64,7 +64,7 @@ class SeckillRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ResultBeanData.ResultBean.SeckillInfoBean.ListBean listBean = list.get(position);
             tvCoverPrice.setText("￥" + listBean.getCover_price());
             tvOriginPrice.setText("￥" + listBean.getOrigin_price());
-            Glide.with(mContext).load(Constants.Base_URl_IMAGE + listBean.getFigure()).into(ivFigure);
+            Glide.with(mContext).load(Constants.BASE_URl_IMAGE + listBean.getFigure()).into(ivFigure);
 
             ll_root.setOnClickListener(new View.OnClickListener() {
                 @Override
