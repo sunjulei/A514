@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,14 +28,16 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     private final TextView tvShopcartTotal;
     private final CheckBox checkboxAll;
     private final CheckBox cbAll;
+    private final LinearLayout llEmptyShopcart;
 
 
-    public ShoppingCartAdapter(Context mContext, List<GoodsBean> goodsBeanList, TextView tvShopcartTotal, CheckBox checkboxAll, CheckBox cbAll) {
+    public ShoppingCartAdapter(Context mContext, List<GoodsBean> goodsBeanList, TextView tvShopcartTotal, CheckBox checkboxAll, CheckBox cbAll, LinearLayout llEmptyShopcart) {
         this.mContext = mContext;
         this.datas = goodsBeanList;
         this.tvShopcartTotal = tvShopcartTotal;
         this.checkboxAll = checkboxAll;
-        this.cbAll=cbAll;
+        this.cbAll = cbAll;
+        this.llEmptyShopcart=llEmptyShopcart;
 
         //首次加载数据
         showTotalPrice();
@@ -89,26 +92,26 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
 
     public void checkAll() {
-        if(datas != null && datas.size() >0){
+        if (datas != null && datas.size() > 0) {
             int number = 0;
-            for (int i=0;i<datas.size();i++){
+            for (int i = 0; i < datas.size(); i++) {
                 GoodsBean goodsBean = datas.get(i);
-                if(!goodsBean.isChildSelected()){
+                if (!goodsBean.isChildSelected()) {
                     //非全选
                     checkboxAll.setChecked(false);
                     cbAll.setChecked(false);
-                }else{
+                } else {
                     //选中的
-                    number ++;
+                    number++;
                 }
             }
 
-            if(number == datas.size()){
+            if (number == datas.size()) {
                 //全选
                 checkboxAll.setChecked(true);
                 cbAll.setChecked(true);
             }
-        }else{
+        } else {
             checkboxAll.setChecked(false);
             cbAll.setChecked(false);
         }
@@ -186,6 +189,27 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         return datas.size();
     }
 
+    /**
+     * 删除数据
+     */
+    public void deleteData() {
+        if (datas != null && datas.size() > 0) {
+            for (int i = 0; i < datas.size(); i++) {
+                GoodsBean goodsBean = datas.get(i);
+                //删除选中的
+                if (goodsBean.isChildSelected()) {
+                    //内存-把移除
+                    datas.remove(goodsBean);
+                    //保持到本地
+                    CartStorage.getInstance().deleteData(goodsBean);
+                    //刷新
+                    notifyItemRemoved(i);
+                    i--;
+                }
+            }
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private CheckBox cbGov;
@@ -207,16 +231,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
                         onItemClickListener.onItemClick(getLayoutPosition());
-//                        Toast.makeText(mContext,getLayoutPosition()+"",Toast.LENGTH_LONG).show();
                     }
                 }
             });
         }
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
 
-         void onItemClick(int position);
+        void onItemClick(int position);
     }
 
     private OnItemClickListener onItemClickListener;

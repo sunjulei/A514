@@ -57,6 +57,14 @@ public class MainActivity extends FragmentActivity {
         initListener();
     }
 
+    /**
+     * 重新加载页面
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initFragment();
+    }
 
     private void initFragment() {
         fragments = new ArrayList<>();
@@ -122,10 +130,10 @@ public class MainActivity extends FragmentActivity {
      * 显示和隐藏RadioButton对应的页面
      */
     private void switchFragment(Fragment fromFragment, BaseFragment nextFragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (mContext != nextFragment) {
             mContext = nextFragment;
             if (nextFragment != null) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 //判断nextFragment是否添加
                 if (!nextFragment.isAdded()) {
                     //隐藏当前Fragment

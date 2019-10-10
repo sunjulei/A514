@@ -1,5 +1,6 @@
 package com.appname.weare.app514.shoppingcart;
 
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appname.weare.app514.R;
+import com.appname.weare.app514.app.MainActivity;
 import com.appname.weare.app514.app.bean.GoodsBean;
 import com.appname.weare.app514.base.BaseFragment;
 import com.appname.weare.app514.shoppingcart.adapter.ShoppingCartAdapter;
@@ -46,23 +48,24 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     public View initView() {
         Log.e(TAG, "购物车视图被初始化了");
         View view = View.inflate(mContext, R.layout.fragment_shoppingcart, null);
-        tvShopcartEdit = (TextView)view.findViewById( R.id.tv_shopcart_edit );
-        recyclerview = (RecyclerView)view.findViewById( R.id.recyclerview );
-        llCheckAll = (LinearLayout)view.findViewById( R.id.ll_check_all );
-        checkboxAll = (CheckBox)view.findViewById( R.id.checkbox_all );
-        tvShopcartTotal = (TextView)view.findViewById( R.id.tv_shopcart_total );
-        btnCheckOut = (Button)view.findViewById( R.id.btn_check_out );
-        llDelete = (LinearLayout)view.findViewById( R.id.ll_delete );
-        cbAll = (CheckBox)view.findViewById( R.id.cb_all );
-        btnDelete = (Button)view.findViewById( R.id.btn_delete );
-        btnCollection = (Button)view.findViewById( R.id.btn_collection );
-        ivEmpty = (ImageView)view.findViewById( R.id.iv_empty );
-        tvEmptyCartTobuy = (TextView)view.findViewById( R.id.tv_empty_cart_tobuy );
-        llEmptyShopcart=(LinearLayout)view.findViewById(R.id.ll_empty_shopcart);
+        tvShopcartEdit = (TextView) view.findViewById(R.id.tv_shopcart_edit);
+        recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
+        llCheckAll = (LinearLayout) view.findViewById(R.id.ll_check_all);
+        checkboxAll = (CheckBox) view.findViewById(R.id.checkbox_all);
+        tvShopcartTotal = (TextView) view.findViewById(R.id.tv_shopcart_total);
+        btnCheckOut = (Button) view.findViewById(R.id.btn_check_out);
+        llDelete = (LinearLayout) view.findViewById(R.id.ll_delete);
+        cbAll = (CheckBox) view.findViewById(R.id.cb_all);
+        btnDelete = (Button) view.findViewById(R.id.btn_delete);
+        btnCollection = (Button) view.findViewById(R.id.btn_collection);
+        ivEmpty = (ImageView) view.findViewById(R.id.iv_empty);
+        tvEmptyCartTobuy = (TextView) view.findViewById(R.id.tv_empty_cart_tobuy);
+        llEmptyShopcart = (LinearLayout) view.findViewById(R.id.ll_empty_shopcart);
 
-        btnCheckOut.setOnClickListener( this );
-        btnDelete.setOnClickListener( this );
-        btnCollection.setOnClickListener( this );
+        btnCheckOut.setOnClickListener(this);
+        btnDelete.setOnClickListener(this);
+        btnCollection.setOnClickListener(this);
+        tvEmptyCartTobuy.setOnClickListener(this);
 
         initListener();
         return view;
@@ -73,11 +76,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         tvShopcartEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int state= (int)tvShopcartEdit.getTag();
-                if (state==ACTION_EDIT){
+                int state = (int) tvShopcartEdit.getTag();
+                if (state == ACTION_EDIT) {
                     //切换为完成状态
                     showDelete();
-                }else {
+                } else {
                     //切换为编辑状态
                     hideDelete();
                 }
@@ -125,12 +128,19 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        if ( v == btnCheckOut ) {
+        if (v == btnCheckOut) {
 
-        } else if ( v == btnDelete ) {
+        } else if (v == btnDelete) {
+            //删除选中的产品
+            adapter.deleteData();
+            adapter.showTotalPrice();
+            if (adapter.getItemCount() == 0) {
+                emtyShoppingCart();
+            }
+        } else if (v == btnCollection) {
 
-        } else if ( v == btnCollection ) {
-
+        } else if (v == tvEmptyCartTobuy) {
+            startActivity(new Intent(mContext, MainActivity.class));
         }
     }
 
@@ -138,7 +148,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     public void initData() {
         super.initData();
         Log.e(TAG, "购物车数据被初始化了");
-
         showData();
 
     }
@@ -154,7 +163,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             llEmptyShopcart.setVisibility(View.GONE);
 
             //设置适配器
-            adapter = new ShoppingCartAdapter(mContext, goodsBeanList,tvShopcartTotal,checkboxAll,cbAll);
+            adapter = new ShoppingCartAdapter(mContext, goodsBeanList, tvShopcartTotal, checkboxAll, cbAll, llEmptyShopcart);
             recyclerview.setAdapter(adapter);
 
             //设置布局管理器
@@ -164,9 +173,14 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         } else {
             //没有数据
             //显示数据为空的布局
-            llEmptyShopcart.setVisibility(View.VISIBLE);
+            emtyShoppingCart();
         }
     }
 
+    private void emtyShoppingCart() {
+        llEmptyShopcart.setVisibility(View.VISIBLE);
+        tvShopcartEdit.setVisibility(View.GONE);
+        llDelete.setVisibility(View.GONE);
+    }
 
 }
