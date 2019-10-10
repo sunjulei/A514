@@ -3,10 +3,16 @@ package com.appname.weare.app514.app.bean;
 import java.io.Serializable;
 
 public class GoodsBean implements Serializable {
+
+    //名称
     private String name;
+    //价格
     private String cover_price;
+    //图片
     private String figure;
+    //产品id
     private String product_id;
+    //购物车产品 最少一个
     private int number = 1;
     /**
      * 是否处于编辑状态
@@ -15,7 +21,7 @@ public class GoodsBean implements Serializable {
     /**
      * 是否被选中
      */
-    private boolean isChildSelected;
+    private boolean isChildSelected=false;
 
     public GoodsBean() {
     }

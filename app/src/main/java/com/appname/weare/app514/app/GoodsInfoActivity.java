@@ -3,6 +3,7 @@ package com.appname.weare.app514.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -16,10 +17,9 @@ import android.widget.Toast;
 
 import com.appname.weare.app514.R;
 import com.appname.weare.app514.app.bean.GoodsBean;
+import com.appname.weare.app514.shoppingcart.utils.CartStorage;
 import com.appname.weare.app514.utils.Constants;
 import com.bumptech.glide.Glide;
-
-import java.util.List;
 
 
 public class GoodsInfoActivity extends Activity implements View.OnClickListener {
@@ -42,8 +42,6 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
     private LinearLayout ll_root;
     private Button btn_more;
 
-    //    private CartProvider cartProvider;
-    private List<GoodsBean> goodsBeans;
     private GoodsBean goods_bean;
 
     @Override
@@ -63,8 +61,15 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
 
     private void setWebView(String product_id) {
         if (product_id != null) {
+
+            WebSettings settings = wbGoodInfoMore.getSettings();
+            settings.setUseWideViewPort(true);//支持双击变大变小
+            settings.setJavaScriptEnabled(true);//启用支持javascript
+            settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//优先使用缓存
+
+
             //http://192.168.51.104:8080/atguigu/json/GOODSINFO_URL.json2691 //
-            wbGoodInfoMore.loadUrl(Constants.GOODSINFO_URL + product_id);
+//            wbGoodInfoMore.loadUrl(Constants.GOODSINFO_URL + product_id);
             wbGoodInfoMore.loadUrl("https://www.jd.com");
             //覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
             wbGoodInfoMore.setWebViewClient(new WebViewClient() {
@@ -75,11 +80,6 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
                     return true;
                 }
             });
-            //启用支持javascript
-            WebSettings settings = wbGoodInfoMore.getSettings();
-            settings.setJavaScriptEnabled(true);
-            //优先使用缓存
-            wbGoodInfoMore.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
     }
 
@@ -172,10 +172,9 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener 
 //            Intent intent = new Intent(this, ShoppingCartActivity.class);
 //            startActivity(intent);
         } else if (v == btnGoodInfoAddcart) {
-            //添加购物车
-//            cartProvider.addData(goods_bean);
-//            showPopwindow();
-            Toast.makeText(GoodsInfoActivity.this, "添加购物车", Toast.LENGTH_SHORT).show();
+            CartStorage.getInstance().addDate(goods_bean);
+            Toast.makeText(GoodsInfoActivity.this, "添加到购物车成功",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
