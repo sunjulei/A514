@@ -13,7 +13,7 @@ import com.appname.weare.app514.base.BaseFragment;
 import com.appname.weare.app514.community.CommunityFragment;
 import com.appname.weare.app514.home.HomeFragment;
 import com.appname.weare.app514.shoppingcart.ShoppingCartFragment;
-import com.appname.weare.app514.type.TypeFragment;
+import com.appname.weare.app514.type.fragment.TypeFragment;
 import com.appname.weare.app514.user.UserFragment;
 
 import java.util.ArrayList;

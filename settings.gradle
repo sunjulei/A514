@@ -1,1 +1,2 @@
-include ':app', ':banner', ':AddSubView'
+include ':app', ':banner', ':FlycoTabLayout_Lib'
+//include ':AddSubView'
